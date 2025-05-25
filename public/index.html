@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wiki Potager - Serveur Minecraft</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage-compat.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <link rel="icon" type="image/png" href="./potager_logo_puma_1.png">
+</head>
+<body>
+    <div id="page-container">
+        <!-- Barre latérale -->
+        <aside class="sidebar">
+            <div class="logo">
+                <img src="./potager_logo_puma_1.png" alt="Potager Logo">
+                <h1>Wiki Potager</h1>
+            </div>
+            
+            <div class="sidebar-divider"></div>
+            
+            <nav class="sidebar-nav">
+                <h3>Navigation</h3>
+                <ul id="categories-list">
+                    <li><a href="#" class="active" data-category="all"><i class="fas fa-home"></i>Accueil</a></li>
+                    <li><a href="#" data-category="cultures"><i class="fas fa-seedling"></i>Cultures & Fermes</a></li>
+                    <li><a href="#" data-category="constructions"><i class="fas fa-hammer"></i>Constructions</a></li>
+                    <li><a href="#" data-category="biomes"><i class="fas fa-mountain"></i>Biomes & Régions</a></li>
+                    <li><a href="#" data-category="plugins"><i class="fas fa-puzzle-piece"></i>Plugins & Commandes</a></li>
+                    <li><a href="#" data-category="communaute"><i class="fas fa-users"></i>Communauté</a></li>
+                    <li><a href="#" data-category="guides"><i class="fas fa-book"></i>Règles & Guides</a></li>
+                </ul>
+            </nav>
+            
+            <div class="sidebar-divider"></div>
+            
+            <div id="create-article-container" class="create-article-wrapper">
+                <!-- Ce contenu sera remplacé dynamiquement -->
+            </div>
+            
+            <div class="sidebar-footer">
+                <p>Serveur Minecraft Potager</p>
+                <small>&copy; 2025 Tous droits réservés</small>
+            </div>
+        </aside>
+
+        <!-- Contenu principal -->
+        <main class="main-content">
+            <header class="main-header">
+                <div class="search-container">
+                    <div class="search-bar">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="search-input" placeholder="Rechercher dans le wiki...">
+                    </div>
+                </div>
+                
+                <div class="auth-container">
+                    <button id="login-btn" class="discord-btn">
+                        <i class="fab fa-discord"></i>
+                        <span>Connexion Discord</span>
+                    </button>
+                    <div id="user-profile" class="hidden">
+                        <img id="user-avatar" src="images/default-avatar.png" alt="Avatar">
+                        <span id="user-name">Utilisateur</span>
+                        <button id="logout-btn">
+                            <i class="fas fa-sign-out-alt"></i>
+                        </button>
+                    </div>
+                </div>
+            </header>
+
+            <div class="content-wrapper">
+                <section id="articles-list">
+                    <!-- Bannière d'accueil -->
+                    <div class="welcome-banner">
+                        <div class="welcome-content">
+                            <h2>Bienvenue sur le Wiki du serveur Potager</h2>
+                            <p>Découvrez toutes les informations, astuces et guides sur notre univers Minecraft. Contribuez en créant et modifiant des articles pour enrichir notre base de connaissances commune !</p>
+                        </div>
+                    </div>
+
+                    <!-- Section des articles récents -->
+                    <div class="section-header">
+                        <h3><i class="fas fa-leaf"></i> Articles récents</h3>
+                        <div class="section-line"></div>
+                    </div>
+                    
+                    <div id="articles-container" class="articles-grid">
+                        <!-- Les articles seront chargés dynamiquement ici -->
+                    </div>
+                </section>
+
+                <!-- Éditeur d'article avancé -->
+                <section id="article-editor" class="hidden">
+                    <div class="editor-header">
+                        <h3><i class="fas fa-edit"></i> Créer un nouvel article</h3>
+                        <button id="close-editor" class="close-btn"><i class="fas fa-times"></i></button>
+                    </div>
+                    
+                    <form id="article-form">
+                        <div class="form-group">
+                            <label for="article-title">Titre de l'article</label>
+                            <input type="text" id="article-title" required placeholder="Un titre captivant...">
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="article-category">Catégorie</label>
+                                <select id="article-category" required>
+                                    <option value="">Sélectionner une catégorie</option>
+                                    <option value="cultures">Cultures & Fermes</option>
+                                    <option value="constructions">Constructions</option>
+                                    <option value="biomes">Biomes & Régions</option>
+                                    <option value="plugins">Plugins & Commandes</option>
+                                    <option value="communaute">Communauté</option>
+                                    <option value="guides">Règles & Guides</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="article-cover-image">Image de couverture</label>
+                                <div class="image-upload-container">
+                                    <input type="file" id="article-cover-image" accept="image/*" class="image-upload-input">
+                                    <label for="article-cover-image" class="image-upload-label">
+                                        <i class="fas fa-cloud-upload-alt"></i>
+                                        <span>Sélectionner une image</span>
+                                    </label>
+                                    <div id="cover-image-preview" class="image-preview hidden"></div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Contenu de l'article</label>
+                            <div class="editor-toolbar">
+                                <button type="button" class="toolbar-btn" data-action="heading"><i class="fas fa-heading"></i></button>
+                                <button type="button" class="toolbar-btn" data-action="subheading"><i class="fas fa-heading fa-sm"></i></button>
+                                <button type="button" class="toolbar-btn" data-action="paragraph"><i class="fas fa-paragraph"></i></button>
+                                <button type="button" class="toolbar-btn" data-action="image"><i class="fas fa-image"></i></button>
+                                <button type="button" class="toolbar-btn" data-action="list"><i class="fas fa-list-ul"></i></button>
+                                <button type="button" class="toolbar-btn" data-action="link"><i class="fas fa-link"></i></button>
+                                <button type="button" class="toolbar-btn" data-action="code"><i class="fas fa-code"></i></button>
+                                <button type="button" class="toolbar-btn" data-action="quote"><i class="fas fa-quote-right"></i></button>
+                            </div>
+                            
+                            <div id="editor-content" class="editor-content">
+                                <!-- Les blocs de contenu seront ajoutés ici -->
+                            </div>
+                            
+                            <!-- Champ caché pour stocker le contenu de l'article en JSON -->
+                            <input type="hidden" id="article-content-json" name="article-content-json">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="article-sources">Sources & Références</label>
+                            <div id="sources-container">
+                                <div class="source-item">
+                                    <input type="text" class="source-input" placeholder="Titre de la source">
+                                    <input type="url" class="source-url" placeholder="URL de la source">
+                                    <button type="button" class="remove-source-btn"><i class="fas fa-times"></i></button>
+                                </div>
+                            </div>
+                            <button type="button" id="add-source-btn" class="add-btn">
+                                <i class="fas fa-plus"></i> Ajouter une source
+                            </button>
+                        </div>
+                        
+                        <div class="form-buttons">
+                            <button type="button" id="cancel-edit" class="cancel-btn">Annuler</button>
+                            <button type="submit" class="submit-btn">Publier l'article</button>
+                        </div>
+                    </form>
+                </section>
+
+                <!-- Vue d'article individuel -->
+                <section id="article-view" class="hidden">
+                    <div class="article-header">
+                        <h2 id="view-title"></h2>
+                        <div class="article-meta">
+                            <div class="article-author">
+                                <img id="view-author-avatar" src="" alt="Avatar">
+                                <span>Par <strong id="view-author"></strong></span>
+                            </div>
+                            <div class="article-info">
+                                <span id="view-date"></span>
+                                <span class="meta-separator">•</span>
+                                <span id="view-category" class="article-category-tag"></span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div id="view-content" class="article-content"></div>
+                    
+                    <div id="view-sources" class="article-sources hidden">
+                        <h3>Sources & Références</h3>
+                        <ul id="sources-list"></ul>
+                    </div>
+                    
+                    <div class="article-actions">
+                        <button id="back-to-list" class="back-btn">
+                            <i class="fas fa-arrow-left"></i> Retour aux articles
+                        </button>
+                        <div class="article-edit-actions">
+                            <button id="edit-article-btn" class="edit-btn">
+                                <i class="fas fa-pen"></i> Modifier
+                            </button>
+                            <button id="delete-article-btn" class="delete-btn">
+                                <i class="fas fa-trash"></i> Supprimer
+                            </button>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <!-- Image upload modal -->
+    <div id="image-upload-modal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Ajouter une image</h3>
+                <button id="close-modal" class="close-btn"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="image-file">Choisir une image</label>
+                    <div class="image-upload-container">
+                        <input type="file" id="image-file" accept="image/*" class="image-upload-input">
+                        <label for="image-file" class="image-upload-label">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <span>Sélectionner un fichier</span>
+                        </label>
+                    </div>
+                    <div id="image-preview" class="image-preview hidden"></div>
+                </div>
+                <div class="form-group">
+                    <label for="image-alt">Texte alternatif (pour l'accessibilité)</label>
+                    <input type="text" id="image-alt" placeholder="Description de l'image...">
+                </div>
+                <div class="form-group">
+                    <label for="image-caption">Légende (optionnel)</label>
+                    <input type="text" id="image-caption" placeholder="Légende de l'image...">
+                </div>
+                <div class="form-buttons">
+                    <button type="button" id="cancel-image" class="cancel-btn">Annuler</button>
+                    <button type="button" id="insert-image" class="submit-btn">Insérer l'image</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Link modal -->
+    <div id="link-modal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Ajouter un lien</h3>
+                <button id="close-link-modal" class="close-btn"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="link-text">Texte du lien</label>
+                    <input type="text" id="link-text" placeholder="Texte à afficher...">
+                </div>
+                <div class="form-group">
+                    <label for="link-url">URL</label>
+                    <input type="url" id="link-url" placeholder="https://...">
+                </div>
+                <div class="form-buttons">
+                    <button type="button" id="cancel-link" class="cancel-btn">Annuler</button>
+                    <button type="button" id="insert-link" class="submit-btn">Insérer le lien</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Overlay de chargement -->
+    <div id="loading-overlay" class="hidden">
+        <div class="spinner-container">
+            <div class="spinner"></div>
+            <p>Chargement en cours...</p>
+        </div>
+    </div>
+
+    <!-- Notifications -->
+    <div id="notification" class="notification">
+        <div class="notification-icon">
+            <i class="fas fa-check-circle"></i>
+        </div>
+        <div class="notification-content">
+            <h4 id="notification-title">Succès</h4>
+            <p id="notification-message">L'opération a été effectuée avec succès.</p>
+        </div>
+        <button class="notification-close"><i class="fas fa-times"></i></button>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
