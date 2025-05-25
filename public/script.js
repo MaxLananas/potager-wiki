@@ -241,7 +241,7 @@ function updateUIForAuthState(user) {
         // Ajouter l'événement au bouton d'invitation
         document.getElementById('login-invite-btn').addEventListener('click', () => {
             // Utiliser l'URL fournie pour l'authentification Discord
-            window.location.href = 'https://discord.com/oauth2/authorize?client_id=1376252920370167849&response_type=code&redirect_uri=http%3A%2F%2Flocalhost%3A5000%2Fauth%2Fdiscord%2Fcallback&scope=identify+email';
+            window.location.href = 'https://discord.com/oauth2/authorize?client_id=1376252920370167849&response_type=code&redirect_uri=https%3A%2F%2Fpotager-wiki.pages.dev%2Fpublic%2F&scope=identify+email';
         });
     }
 }
@@ -859,7 +859,7 @@ function populateEditor(content, sources) {
 function setupAuth() {
     loginBtn.addEventListener('click', () => {
         // Utiliser l'URL fournie pour l'authentification Discord
-        window.location.href = 'https://discord.com/oauth2/authorize?client_id=1376252920370167849&response_type=code&redirect_uri=http%3A%2F%2Flocalhost%3A5000%2Fauth%2Fdiscord%2Fcallback&scope=identify+email';
+        window.location.href = 'https://discord.com/oauth2/authorize?client_id=1376252920370167849&response_type=code&redirect_uri=https%3A%2F%2Fpotager-wiki.pages.dev%2Fpublic%2F&scope=identify+email';
     });
 
     logoutBtn.addEventListener('click', async () => {
