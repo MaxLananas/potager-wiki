@@ -47,7 +47,7 @@ app.use(session({
 // Configuration Discord OAuth
 const DISCORD_CLIENT_ID = '1376252920370167849';
 const DISCORD_CLIENT_SECRET = '558WNq85hBfmbaeb-bODqGFH3p1vxXYA';
-const REDIRECT_URI = 'http://localhost:5000/auth/discord/callback';
+const REDIRECT_URI = 'https://potager-wiki.pages.dev/auth/discord/callback';
 
 // Route d'authentification Discord
 app.get('/auth/discord', (req, res) => {
